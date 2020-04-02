@@ -1,5 +1,3 @@
-SET ROLE sogis_admin
-;
 
 CREATE SCHEMA agi_av_kaso_abgleich_import
 ;
