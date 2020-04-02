@@ -85,3 +85,6 @@ SELECT AddGeometryColumn('agi_av_kaso_abgleich_import', 'uebersicht_des_vergleic
 ;
 GRANT USAGE ON SEQUENCE agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging_t_id_seq TO admin,gretl
 ;
+
+ALTER TABLE agi_av_kaso_abgleich_import.differenzen_staging ALTER COLUMN geometrie SET DATA TYPE geometry;
+ALTER TABLE agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging ALTER COLUMN geometrie SET DATA TYPE geometry;
