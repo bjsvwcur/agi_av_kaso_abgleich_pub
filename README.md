@@ -29,4 +29,11 @@ Testdaten in edit-DB importieren:
 In das Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ wechseln...
 ./ili2pg_dataimportEdit_dm01avso24_2493.sh
 ./ili2pg_dataimportEdit_dm01avso24_2499.sh
+
+Daten in Schema av_grundbuch importieren:
+Pro Tabelle in der Temp edit-DB die Daten importieren aus den Tabellen der sogis-DB, Schema av_grundbuch, Tabelle:
+- grundbuch_art
+- grundbuchamt
+- grundbuchkreis_herkunft
+- grundbuchkreise
 ```
