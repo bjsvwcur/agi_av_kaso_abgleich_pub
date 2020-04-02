@@ -15,7 +15,7 @@ ext {
 // are exposed. 
 task createSchemaLandUsePlans(type: SqlExecutor){
     database = [dbUriEdit, "admin", "admin"]
-    sqlFiles = ['kaso_abgleich.sql', 'kaso_abgleich_grants.sql']
+    sqlFiles = ['kaso_abgleich.sql', 'kaso_abgleich_grants.sql', 'agi_dm01avso24.sql', 'agi_dm01avso24_grants']
 }
 
 task createSchemaLandUsePlansPub(type: SqlExecutor){
