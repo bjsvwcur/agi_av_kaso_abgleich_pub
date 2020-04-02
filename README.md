@@ -1,6 +1,6 @@
 # agi_av_kaso_abgleich_pub
 
-Create Schema und Import Daten der Nutzungsplanung mit ili2pg V 4.3.1
+Create Schema und Import Daten KASO Abgleich
 
 Git clonen:
 ```
@@ -22,3 +22,10 @@ ENV Variablen auf die "Container"-DB setzen:
   export ORG_GRADLE_PROJECT_dbUriPub="jdbc:postgresql://pub-db/pub"
   export ORG_GRADLE_PROJECT_dbUserPub="gretl"
   export ORG_GRADLE_PROJECT_dbPwdPub="gretl"
+
+Testdaten in edit-DB importieren:
+```
+In das Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ wechseln...
+./ili2pg_dataimportEdit_dm01avso24_2493.sh
+./ili2pg_dataimportEdit_dm01avso24_2499.sh
+```
