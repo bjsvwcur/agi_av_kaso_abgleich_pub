@@ -22,6 +22,7 @@ ENV Variablen auf die "Container"-DB setzen:
   export ORG_GRADLE_PROJECT_dbUriPub="jdbc:postgresql://pub-db/pub"
   export ORG_GRADLE_PROJECT_dbUserPub="gretl"
   export ORG_GRADLE_PROJECT_dbPwdPub="gretl"
+```
 
 Testdaten in edit-DB importieren:
 ```
