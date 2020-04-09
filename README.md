@@ -37,3 +37,8 @@ Pro Tabelle in der Temp edit-DB die Daten importieren aus den Tabellen der sogis
 - grundbuchkreis_herkunft
 - grundbuchkreise
 ```
+
+Gretljob starten für Datenexport kaso und DB2DB edit-pub:
+```
+sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network agiavkasoabgleichpub_default --job-directory /home/bjsvwcur/Meine-Repos/agi_av_kaso_abgleich_pub/kaso_abgleich/
+```
