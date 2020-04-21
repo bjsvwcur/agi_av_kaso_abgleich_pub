@@ -7,11 +7,12 @@ Git clonen:
   git clone https://github.com/bjsvwcur/agi_av_kaso_abgleich_pub.git
 ```
 
-Docker Container erstellen mit 2 PostgreSQL DBs edit und Pub. Inkl. 
+Docker Container erstellen mit 2 PostgreSQL DBs edit und Pub.
+Im Repo "agi_av_kaso_abgleich_pub" den Container erstellen: 
 
 ```
   docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
-  docker-compose run --rm --user $UID -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle createSchemaLandUsePlans createSchemaLandUsePlansPub"
+  docker-compose up
 ```
 
 ENV Variablen auf die "Container"-DB setzen:
@@ -22,23 +23,32 @@ ENV Variablen auf die "Container"-DB setzen:
   export ORG_GRADLE_PROJECT_dbUriPub="jdbc:postgresql://pub-db/pub"
   export ORG_GRADLE_PROJECT_dbUserPub="gretl"
   export ORG_GRADLE_PROJECT_dbPwdPub="gretl"
+  export ORG_GRADLE_PROJECT_dbUriKaso="ANGABEN SIEHE Ticket"
+  export ORG_GRADLE_PROJECT_dbUserKaso="ANGABEN SIEHE Ticket"
+  export ORG_GRADLE_PROJECT_dbPwdKaso="ANGABEN SIEHE Ticket"
+
+Schemas erstellen in der edit-DB:
+Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+```
+ psql -h localhost -p 54321 -d edit -U admin -W admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql
+```
+
+Schemas erstellen in der pub-DB:
+Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+```
+ psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_alter_table.sql -f kaso_abgleich_pub_grants.sql
 ```
 
 Testdaten in edit-DB importieren:
+Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+# !! ACHTUNG !! Pfad in den 2 Files zu ili2pg-4.3.1 anpassen!!*
 ```
-In das Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ wechseln...
 ./ili2pg_dataimportEdit_dm01avso24_2493.sh
 ./ili2pg_dataimportEdit_dm01avso24_2499.sh
-
-Daten in Schema av_grundbuch importieren:
-Pro Tabelle in der Temp edit-DB die Daten importieren aus den Tabellen der sogis-DB, Schema av_grundbuch, Tabelle:
-- grundbuch_art
-- grundbuchamt
-- grundbuchkreis_herkunft
-- grundbuchkreise
 ```
 
-Gretljob starten für Datenexport kaso und DB2DB edit-pub (aus Verzeichnis /kaso_abgleich/ starten):
+Gretljob starten für Datenexport kaso und DB2DB edit-pub.
+Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/kaso_abgleich/ ausführen:
 ```
-sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network agiavkasoabgleichpub_default --job-directory /home/bjsvwcur/Meine-Repos/agi_av_kaso_abgleich_pub/kaso_abgleich/
+sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network agiavkasoabgleichpub_default --job-directory $PWD
 ```
