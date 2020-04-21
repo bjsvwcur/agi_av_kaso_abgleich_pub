@@ -30,12 +30,14 @@ ENV Variablen auf die "Container"-DB setzen:
 
 Schemas erstellen in der edit-DB:
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+PW für admin = admin
 ```
- psql -h localhost -p 54321 -d edit -U admin -W admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql
+ psql -h localhost -p 54321 -d edit -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql
 ```
 
 Schemas erstellen in der pub-DB:
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+PW für admin = admin
 ```
  psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_alter_table.sql -f kaso_abgleich_pub_grants.sql
 ```
