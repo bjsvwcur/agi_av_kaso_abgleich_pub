@@ -26,6 +26,7 @@ ENV Variablen auf die "Container"-DB setzen:
   export ORG_GRADLE_PROJECT_dbUriKaso="ANGABEN SIEHE Ticket"
   export ORG_GRADLE_PROJECT_dbUserKaso="ANGABEN SIEHE Ticket"
   export ORG_GRADLE_PROJECT_dbPwdKaso="ANGABEN SIEHE Ticket"
+```
 
 Schemas erstellen in der edit-DB:
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
