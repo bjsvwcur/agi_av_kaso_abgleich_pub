@@ -27,24 +27,19 @@ ENV Variablen auf die "Container"-DB setzen:
   export ORG_GRADLE_PROJECT_dbUriKaso="ANGABEN SIEHE Ticket"
   export ORG_GRADLE_PROJECT_dbUserKaso="ANGABEN SIEHE Ticket"
   export ORG_GRADLE_PROJECT_dbPwdKaso="ANGABEN SIEHE Ticket"
+  export ORG_GRADLE_PROJECT_dbUriCapitastra="ANGABEN SIEHE Ticket"
+  export ORG_GRADLE_PROJECT_dbUserCapitastra="ANGABEN SIEHE Ticket"
+  export ORG_GRADLE_PROJECT_dbPwdCapitastra="ANGABEN SIEHE Ticket"
 ```
 
-Schemas erstellen in der edit-DB:
+Schemas erstellen in der edit-DB und Pub-DB:
 
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
 
 PW für admin = admin
 ```
- psql -h localhost -p 54321 -d edit -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql
-```
-
-Schemas erstellen in der pub-DB:
-
-Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
-
-PW für admin = admin
-```
- psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_grants.sql
+ psql -h localhost -p 54321 -d edit -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql -f gb_abgleich.sql -f gb_abgleich_grants.sql
+ psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_grants.sql -f gb_abgleich_pub.sql -f gb_abgleich_pub_grants.sql
 ```
 
 Testdaten in edit-DB importieren:
@@ -57,9 +52,16 @@ Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_d
 ./ili2pg_dataimportEdit_dm01avso24_2499.sh
 ```
 
-Gretljob starten für Datenexport kaso und DB2DB edit-pub.
+#### Gretljob starten für Datenexport kaso und DB2DB edit-pub.
 
-Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/kaso_abgleich/ ausführen:
+Nachfolgende Befehle aus dem Verzeichnis */agi_av_kaso_abgleich_pub/kaso_abgleich/* ausführen:
+```
+sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network agiavkasoabgleichpub_default --job-directory $PWD
+```
+
+#### Gretljob starten für Datenexport capitastra und DB2DB edit-pub.
+
+Nachfolgende Befehle aus dem Verzeichnis */agi_av_kaso_abgleich_pub/gb_abgleich/* ausführen:
 ```
 sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network agiavkasoabgleichpub_default --job-directory $PWD
 ```
