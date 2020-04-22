@@ -32,15 +32,32 @@ WITH
         SELECT 
             liegenschaften_liegenschaft.t_id, 
             liegenschaften_liegenschaft.geometrie, 
+            aimport.importdate AS av_lieferdatum, 
             CAST(liegenschaften_grundstueck.t_datasetname AS integer) AS av_gem_bfs, 
             liegenschaften_grundstueck.nbident AS av_nbident, 
             REPLACE(REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text), ' alt'::text, ''::text)  AS av_nummer, 
+            grundstuecksart.itfcode AS av_art, 
             liegenschaften_grundstueck.art AS av_art_txt, 
             liegenschaften_liegenschaft.flaechenmass AS av_flaeche, 
             av_projektierte_grundstuecke.identifikator AS av_mutation_id, 
             av_projektierte_grundstuecke.beschreibung AS av_mut_beschreibung
         FROM 
             agi_dm01avso24.liegenschaften_grundstueck
+            LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+                ON liegenschaften_grundstueck.t_basket = basket.t_id
+            LEFT JOIN agi_dm01avso24.liegenschaften_grundstuecksart AS grundstuecksart
+                ON liegenschaften_grundstueck.art = grundstuecksart.ilicode
+            LEFT JOIN 
+            (
+                SELECT
+                    max(importdate) AS importdate,
+                    dataset
+                FROM
+                    agi_dm01avso24.t_ili2db_import
+                GROUP BY
+                    dataset 
+            ) AS  aimport
+                 ON basket.dataset = aimport.dataset
             JOIN agi_dm01avso24.liegenschaften_liegenschaft
                 ON liegenschaften_liegenschaft.liegenschaft_von::text = liegenschaften_grundstueck.t_id::text
             LEFT JOIN av_projektierte_grundstuecke
@@ -54,16 +71,33 @@ WITH
         SELECT 
             liegenschaften_selbstrecht.t_id, 
             liegenschaften_selbstrecht.geometrie, 
+            aimport.importdate AS av_lieferdatum,  
             CAST(liegenschaften_grundstueck.t_datasetname AS integer) AS av_gem_bfs, 
             liegenschaften_grundstueck.nbident AS av_nbident, 
             REPLACE(REPLACE(liegenschaften_grundstueck.nummer::text, ' LRO'::text, ''::text), ' alt'::text, ''::text)  AS av_nummer, 
+            grundstuecksart.itfcode AS av_art, 
             liegenschaften_grundstueck.art AS av_art_txt, 
             liegenschaften_selbstrecht.flaechenmass AS av_flaeche,
             av_projektiertes_selbstrecht.identifikator AS av_mutation_id, 
             av_projektiertes_selbstrecht.beschreibung AS av_mut_beschreibung
         FROM 
             agi_dm01avso24.liegenschaften_grundstueck
-            JOIN agi_dm01avso24.liegenschaften_selbstrecht 
+            LEFT JOIN agi_dm01avso24.liegenschaften_grundstuecksart AS grundstuecksart
+                ON liegenschaften_grundstueck.art = grundstuecksart.ilicode
+            LEFT JOIN agi_dm01avso24.t_ili2db_basket AS basket
+                ON liegenschaften_grundstueck.t_basket = basket.t_id
+            LEFT JOIN 
+            (
+                SELECT
+                    max(importdate) AS importdate,
+                    dataset
+                FROM
+                    agi_dm01avso24.t_ili2db_import
+                GROUP BY
+                    dataset 
+            ) AS  aimport
+                 ON basket.dataset = aimport.dataset
+           JOIN agi_dm01avso24.liegenschaften_selbstrecht 
                 ON liegenschaften_selbstrecht.selbstrecht_von::text = liegenschaften_grundstueck.t_id::text 
             LEFT JOIN av_projektiertes_selbstrecht
                 ON 
@@ -83,15 +117,17 @@ WITH
             kaso.gb_gueltigbis AS kaso_historisiert
         FROM
             agi_av_kaso_abgleich_import.kaso_daten AS kaso
---            JOIN av_grundbuch.grundbuchkreise AS grundbuchamt
---                ON grundbuchamt.gb_gemnr = kaso.geb_bfsnr::integer
+ --           JOIN av_grundbuch.grundbuchkreise AS grundbuchamt
+ --               ON grundbuchamt.gb_gemnr = kaso.geb_bfsnr::integer
       )
 
 INSERT INTO agi_av_kaso_abgleich_import.differenzen_staging (
     geometrie,
+    av_lieferdatum,
     av_gem_bfs,
     av_nbident,
     av_nummer,
+    av_art,
     av_art_txt,
     av_flaeche,
     av_mutation_id,
@@ -110,9 +146,11 @@ INSERT INTO agi_av_kaso_abgleich_import.differenzen_staging (
       
 SELECT 
     geometrie,
+    av_lieferdatum,
     av_gem_bfs,
     av_nbident,
     av_nummer,
+    av_art,
     av_art_txt,
     av_flaeche,
     av_mutation_id,
@@ -135,7 +173,7 @@ FROM
  --           AND 
  --           kaso.kaso_nbident =  av_grundstuecke.av_nbident
 WHERE 
-    av_grundstuecke.av_art_txt = 'Liegenschaft'
+    av_grundstuecke.av_art = 0 -- Liegenschaft
     AND 
     REPLACE( av_grundstuecke.av_nummer::text, '/'::text, '.'::text)::numeric < 90000::numeric -- öffentliche Grundstuecke ausgeschlossen
     AND 
@@ -147,9 +185,11 @@ UNION ALL
 
 SELECT 
     geometrie,
+    av_lieferdatum,
     av_gem_bfs,
     av_nbident,
     av_nummer,
+    av_art,
     av_art_txt,
     av_flaeche,
     av_mutation_id,
@@ -168,7 +208,7 @@ FROM
     JOIN kaso
         ON 
             kaso.kaso_gb_nr::text = av_grundstuecke.av_nummer 
- --           AND 
+--            AND 
 --            kaso.kaso_nbident = av_grundstuecke.av_nbident
 WHERE 
     av_grundstuecke.av_flaeche - kaso.kaso_flaeche != 0  
@@ -179,16 +219,18 @@ UNION ALL
 
 SELECT 
     geometrie,
+    av_lieferdatum,
     av_gem_bfs,
     av_nbident,
     av_nummer,
+    av_art,
     av_art_txt,
     av_flaeche,
     av_mutation_id,
     av_mut_beschreibung,
 --    kaso_gemeinde,
     kaso_bfs_nr,
- --   kaso_nbident,
+--    kaso_nbident,
     kaso_gb_nr,
     kaso_art,
     kaso_flaeche, 
@@ -200,8 +242,8 @@ FROM
     LEFT JOIN kaso
         ON
             kaso.kaso_gb_nr::text = av_grundstuecke.av_nummer 
- --           AND 
- --           kaso.kaso_nbident = av_grundstuecke.av_nbident
+--            AND 
+--            kaso.kaso_nbident = av_grundstuecke.av_nbident
 WHERE 
     kaso.kaso_gb_nr IS NULL
     AND 
@@ -213,16 +255,18 @@ UNION ALL
 
 SELECT 
     geometrie,
+    av_lieferdatum,
     av_gem_bfs,
     av_nbident,
     av_nummer,
+    av_art,
     av_art_txt,
     av_flaeche,
     av_mutation_id,
     av_mut_beschreibung,
 --    kaso_gemeinde,
     kaso_bfs_nr,
---   kaso_nbident,
+--    kaso_nbident,
     kaso_gb_nr,
     kaso_art,
     kaso_flaeche, 
@@ -234,8 +278,8 @@ FROM
     RIGHT JOIN kaso
         ON
             kaso.kaso_gb_nr::text = av_grundstuecke.av_nummer
- --           AND
- --           kaso.kaso_nbident = av_grundstuecke.av_nbident
+--            AND
+--            kaso.kaso_nbident = av_grundstuecke.av_nbident
 WHERE 
     av_grundstuecke.t_id IS NULL
     AND
@@ -245,4 +289,3 @@ WHERE
     AND 
     kaso.kaso_flaeche IS NOT NULL
 ;
-

@@ -8,6 +8,7 @@ Git clonen:
 ```
 
 Docker Container erstellen mit 2 PostgreSQL DBs edit und Pub.
+
 Im Repo "agi_av_kaso_abgleich_pub" den Container erstellen: 
 
 ```
@@ -29,27 +30,37 @@ ENV Variablen auf die "Container"-DB setzen:
 ```
 
 Schemas erstellen in der edit-DB:
+
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+
+PW für admin = admin
 ```
- psql -h localhost -p 54321 -d edit -U admin -W admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql
+ psql -h localhost -p 54321 -d edit -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql
 ```
 
 Schemas erstellen in der pub-DB:
+
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
+
+PW für admin = admin
 ```
- psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_alter_table.sql -f kaso_abgleich_pub_grants.sql
+ psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_grants.sql
 ```
 
 Testdaten in edit-DB importieren:
+
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_dbs/ ausführen:
-# !! ACHTUNG !! Pfad in den 2 Files zu ili2pg-4.3.1 anpassen!!*
+
+#### !! ACHTUNG !! Pfad in den 2 Files zu ili2pg-4.3.1 anpassen
 ```
 ./ili2pg_dataimportEdit_dm01avso24_2493.sh
 ./ili2pg_dataimportEdit_dm01avso24_2499.sh
 ```
 
 Gretljob starten für Datenexport kaso und DB2DB edit-pub.
+
 Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/kaso_abgleich/ ausführen:
 ```
 sudo -E ../start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network agiavkasoabgleichpub_default --job-directory $PWD
 ```
+

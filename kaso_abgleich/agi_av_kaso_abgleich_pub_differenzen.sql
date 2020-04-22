@@ -4,6 +4,7 @@ SELECT
     av_gem_bfs,
     av_nbident,
     av_nummer,
+    av_art,
     av_art_txt,
     av_flaeche,
     av_mutation_id,

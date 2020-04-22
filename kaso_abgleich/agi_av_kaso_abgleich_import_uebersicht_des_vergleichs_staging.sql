@@ -50,7 +50,7 @@ INSERT INTO agi_av_kaso_abgleich_import.uebersicht_des_vergleichs_staging (
 (
     SELECT 
         gemeinde.t_id, 
-        gemeinde.geometrie, 
+        gemeinde.geometrie,
         gemeinde.bfs_gemeindenummer AS gem_bfs, 
         gemeinde.gemeindename AS name, 
         COALESCE(diff_av.anzahl, 0::bigint) + COALESCE(diff_kaso.anzahl, 0::bigint) AS anzahl_differenzen
