@@ -4,14 +4,12 @@ DELETE FROM agi_av_gb_abgleich_import.uebersicht_des_vergleichs_staging
 WITH 
     gemeinde AS (
         SELECT 
-            gemeindegrenze.t_id,
-            gemeindegrenze.geometrie,
-            CAST(gemeindegrenze.t_datasetname AS integer) AS bfs_gemeindenummer,
-            gemeinde.aname AS gemeindename
+            t_id,
+            geometrie,
+            bfs_gemeindenummer,
+            gemeindename
         FROM 
-            agi_dm01avso24.gemeindegrenzen_gemeindegrenze AS gemeindegrenze
-            LEFT JOIN agi_dm01avso24.gemeindegrenzen_gemeinde AS gemeinde
-                ON gemeinde.t_id = gemeindegrenze.gemeindegrenze_von
+            agi_hoheitsgrenzen_pub.hoheitsgrenzen_gemeindegrenze
     ), 
     diff_av AS (
         SELECT 
