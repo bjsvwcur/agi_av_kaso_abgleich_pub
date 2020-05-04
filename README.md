@@ -38,7 +38,7 @@ Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_d
 
 PW für admin = admin
 ```
- psql -h localhost -p 54321 -d edit -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql -f gb_abgleich.sql -f gb_abgleich_grants.sql -f agi_hoheitsgrenzen_pub.sql -f agi_hoheitsgrenzen_pub_grants.sql
+ psql -h localhost -p 54321 -d edit -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich.sql -f kaso_abgleich_grants.sql -f agi_dm01avso24.sql -f agi_dm01avso24_grants.sql -f gb_abgleich.sql -f gb_abgleich_grants.sql -f agi_hoheitsgrenzen_pub.sql -f agi_hoheitsgrenzen_pub_grants.sql -f agi_av_gb_admin_einteilung.sql -f agi_av_gb_admin_einteilung_grants.sql
  psql -h localhost -p 54322 -d pub -U admin -c "SET ROLE admin" --single-transaction -f kaso_abgleich_pub.sql -f kaso_abgleich_pub_grants.sql -f gb_abgleich_pub.sql -f gb_abgleich_pub_grants.sql
 ```
 
