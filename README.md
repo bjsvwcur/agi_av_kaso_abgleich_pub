@@ -51,6 +51,7 @@ Nachfolgende Befehle aus dem Verzeichnis /agi_av_kaso_abgleich_pub/development_d
 ./ili2pg_dataimportEdit_dm01avso24_2493.sh
 ./ili2pg_dataimportEdit_dm01avso24_2499.sh
 ./ili2pg_dataimportEdit_hoheitsgrenzen.sh
+./ili2pg_dataimportEdit_agi_av_gb_admin.sh
 ```
 
 #### Gretljob starten für Datenexport kaso und DB2DB edit-pub.
